@@ -36,7 +36,7 @@ const start = () => {
             (inquirerResponse.managerList === "Add to Inventory") {
                 showItems();
             } else if
-            (inquirerResponse.managerList === "Add New Product\n") {
+            (inquirerResponse.managerList === "Add New Product") {
                 addNewProduct();
             }
 
@@ -57,10 +57,18 @@ const displayProducts = () => {
 
 const viewLowInventory = () => {
     connection.query("Select * FROM products WHERE stock_quantity < 10", (err, data) => {
-        if (err) throw err;
-        const dataTable = data.map(row => [row.item_ID, row.product_name, row.department_name, row.price, row.stock_quantity]);
-        console.log(table(dataTable))
-        start();
+        // if (err) throw err;
+        if (data == "") {
+            console.log("\nNo Items Found\n")
+            start();
+        } else {
+            const dataTable = data.map(row => [row.item_ID, row.product_name, row.department_name, row.price, row.stock_quantity]);
+
+            console.log(table(dataTable))
+            start();
+        }
+
+
     })
 }
 
@@ -68,7 +76,7 @@ const showItems = () => {
     connection.query("Select * FROM products", (err, data) => {
         if (err) throw err;
         const dataTable = data.map(row => [row.item_ID, row.product_name, row.department_name, row.price, row.stock_quantity]);
-        console.log("\n" + table(dataTable))
+        console.log(table(dataTable))
         addToInventory();
     })
 }
@@ -162,5 +170,45 @@ const updateStock = () => {
     })
 
 }
+
+const addNewProduct = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Name:",
+            name: "newProductName"
+        },
+        {
+            type: "input",
+            message: "Department:",
+            name: "newProductDepartment"
+        },
+        {
+            type: "input",
+            message: "Price:",
+            name: "newProductPrice"
+        },
+        {
+            type: "input",
+            message: "Quantity:",
+            name: "newProductQuantity"
+        }
+    ]).then(answers => {
+        userSelection = answers;
+        connection.query("INSERT INTO products SET ?",
+            {
+                product_name: userSelection.newProductName,
+                department_name: userSelection.newProductDepartment,
+                price: userSelection.newProductPrice,
+                stock_quantity: userSelection.newProductQuantity
+            },
+            function (err, data) {
+                console.log("Item Added!")
+                start();
+            }
+        );
+    })
+}
+
 
 start();
