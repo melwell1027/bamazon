@@ -20,12 +20,7 @@ Bamazon is an Amazon-like node application that connects to a SQL database using
 ## Getting Started
 1. Clone the repo
 2. Run the NPM install for all the above packages
-3. Create a SQL database named bamazon_db using MySQL with the following columns:
-    * item_id (INTEGER)
-    * product_name (VARCHAR)
-    * department_name (VARCHAR)
-    * price (DECIMAL)
-    * stock_quantity (INTEGER)
+3. Create a SQL database with the data in the sql file
 4. Add your MySql password to the code
 
 ## Available Functions
